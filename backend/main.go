@@ -12,10 +12,10 @@ companyRepo := infrastructure.NewCompanyRepository(database.NewMongoClient)
 specialityRepo := infrastructure.NewSpecialityRepository(database.NewMongoClient)
 vacancyRepo := infrastructure.NewVacancyRepository(database.NewMongoClient)
 
-	companyHandler := handlers.NewCompanyHandler(companyRepo)
-	specialityHandler := handlers.NewSpecialityHandler(specialityRepo)
-	vacancyHandler := handlers.NewVacancyHandler(vacancyRepo)
-	srv := restapi.NewServer(":8080", companyHandler, vacancyHandler, specialityHandler) //, adminsHandler, authMiddleware)
-	srv.ConfigureAndRun()
+//	companyHandler := handlers.NewCompanyHandler(companyRepo)
+//	specialityHandler := handlers.NewSpecialityHandler(specialityRepo)
+//	vacancyHandler := handlers.NewVacancyHandler(vacancyRepo)
+//	srv := restapi.NewServer(":8080", companyHandler, vacancyHandler, specialityHandler) //, adminsHandler, authMiddleware)
+//	srv.ConfigureAndRun()
 
 }
