@@ -1,9 +1,11 @@
 package main
 
 import (
-	"main/infrastructure"
-	"main/restapi"
-	"main/restapi/handlers"
+	"os"
+
+	"dsv/infrastructure"
+	"dsv/restapi"
+	"dsv/restapi/handlers"
 )
 
 func main() {
@@ -19,7 +21,10 @@ func main() {
 	dutyWorkersHandler := handlers.NewDutyWorkersHandler(dutyWorkersRepo)
 	userHandler := handlers.NewUserHandler(userRepo)
 
-	srv := restapi.NewServer(":8080", dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	srv := restapi.NewServer(":" + port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
 	srv.ConfigureAndRun()
-
-}
+)
