@@ -2,20 +2,24 @@ package main
 
 import (
 	"main/infrastructure"
-	"main/infrastructure/database"
 	"main/restapi"
 	"main/restapi/handlers"
 )
 
-func main(){
-companyRepo := infrastructure.NewCompanyRepository(database.NewMongoClient)
-specialityRepo := infrastructure.NewSpecialityRepository(database.NewMongoClient)
-vacancyRepo := infrastructure.NewVacancyRepository(database.NewMongoClient)
+func main() {
+	dutiesRepo := infrastructure.NewDutiesRepository()
+	dutyCategoriesRepo := infrastructure.NewDutyCategoriesRepository()
+	dutyDayRepo := infrastructure.NewDutyDayRepository()
+	dutyWorkersRepo := infrastructure.NewDutyWorkersRepository()
+	userRepo := infrastructure.NewUserRepository()
 
-//	companyHandler := handlers.NewCompanyHandler(companyRepo)
-//	specialityHandler := handlers.NewSpecialityHandler(specialityRepo)
-//	vacancyHandler := handlers.NewVacancyHandler(vacancyRepo)
-//	srv := restapi.NewServer(":8080", companyHandler, vacancyHandler, specialityHandler) //, adminsHandler, authMiddleware)
-//	srv.ConfigureAndRun()
+	dutiesHandler := handlers.NewDutiesHandler(dutiesRepo)
+	dutyCategoriesHandler := handlers.NewDutyCategoriesHandler(dutyCategoriesRepo)
+	dutyDayHandler := handlers.NewDutyDayHandler(dutyDayRepo)
+	dutyWorkersHandler := handlers.NewDutyWorkersHandler(dutyWorkersRepo)
+	userHandler := handlers.NewUserHandler(userRepo)
+
+	srv := restapi.NewServer(":8080", dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
+	srv.ConfigureAndRun()
 
 }

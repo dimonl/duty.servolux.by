@@ -1,42 +1,58 @@
 package restapi
 
 import (
-	"main/restapi/handlers"
 	"fmt"
 	"log"
 	"net/http"
 )
 
 type MyServer struct {
-	port           string
-	companyHandler	handlers.CompanyHandler
-	vacancyHandler  handlers.VacancyHandler
-	specialityHandler  handlers.SpecialityHandler
+	port                  string
+	dutiesHandler         handlers.dutiesHandler
+	dutyCategoriesHandler handlers.dutyCategoriesHandler
+	dutyDayHandler        handlers.dutyDayHandler
+	dutyWorkersHandler    handlers.dutyWorkersHandler
+	userHandler           handlers.userHandler
 	//authMiddleware middleware.AuthMiddleware
 }
 
 //func NewServer(port string, usersHandler handlers.UsersHandler, schoolHandlers handlers.SchoolHandler, groupHandlers handlers.GroupsHandler, authMiddleware middleware.AuthMiddleware) *MyServer {
-func NewServer(port string, companyHandler handlers.CompanyHandler, vacancyHandler handlers.VacancyHandler, specialityHandler handlers.SpecialityHandler) *MyServer {
+func NewServer(port string,
+	dutiesHandler handlers.dutiesHandler,
+	dutyCategoriesHandler handlers.dutyCategoriesHandler,
+	dutyDayHandler handlers.dutyDayHandler,
+	dutyWorkersHandler handlers.dutyWorkersHandler,
+	userHandler handlers.userHandler,
+) *MyServer {
 	return &MyServer{
-		port:           port,
-		companyHandler: companyHandler,
-		vacancyHandler: vacancyHandler,
-		specialityHandler:  specialityHandler,
+		port:                  port,
+		dutiesHandler:         dutiesHandler,
+		dutyCategoriesHandler: dutyCategoriesHandler,
+		dutyDayHandler:        dutyDayHandler,
+		dutyWorkersHandler:    dutyWorkersHandler,
+		userHandler:           userHandler,
 	}
 }
 
 func (server *MyServer) ConfigureAndRun() {
 
 	userMux := http.NewServeMux()
-	userMux.HandleFunc("/companies", server.companyHandler.Companies)
-	userMux.HandleFunc("/companies/", server.companyHandler.Company)
-	userMux.HandleFunc("/", indexHandler)//)server.companyHandler.Companies
+	userMux.HandleFunc("/users", server.userHandler.Users)
+	userMux.HandleFunc("/user/", server.userHandler.User)
 
-	userMux.HandleFunc("/specialities", server.specialityHandler.Specialities)
-	userMux.HandleFunc("/specialities/", server.specialityHandler.Speciality)
-	userMux.HandleFunc("/vacancies", server.vacancyHandler.Vacancies)
-	userMux.HandleFunc("/vacancies/", server.vacancyHandler.Vacancy)
+	userMux.HandleFunc("/", indexHandler) //)server.companyHandler.Companies
 
+	userMux.HandleFunc("/dutyWorkers", server.dutyWorkersHandler.DutyWorkers)
+	userMux.HandleFunc("/dutyWorker/", server.dutyWorkersHandler.DutyWorker)
+
+	userMux.HandleFunc("/dutyDays", server.dutyDayHandler.DutyDays)
+	userMux.HandleFunc("/dutyDay/", server.dutyDayHandler.DutyDay)
+
+	userMux.HandleFunc("/dutyCategories", server.dutyCategoriesHandler.DutyCategories)
+	userMux.HandleFunc("/dutyCategory/", server.dutyCategoriesHandler.DutyCategory)
+
+	userMux.HandleFunc("/duties", server.dutiesHandler.Duties)
+	userMux.HandleFunc("/duty/", server.dutiesHandler.Duty)
 
 	fmt.Printf("listening at %s", server.port)
 	log.Fatal(http.ListenAndServe(server.port, userMux))
