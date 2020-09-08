@@ -25,6 +25,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	srv := restapi.NewServer(":" + port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
+	srv := restapi.NewServer(":"+port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
 	srv.ConfigureAndRun()
-)
+}
