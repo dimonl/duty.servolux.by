@@ -2,6 +2,19 @@ package domain
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+// RegistrationData ...
+type RegistrationData struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
+// OutputLoginData ...
+type OutputLoginData struct {
+	User    string `json:"user"`
+	Token   string `json:"token"`
+	Expires string `json:"expires"`
+}
+
 type UserData struct {
 	FirstName string `json:"firstname"`
 	LastName  int    `json:"lastname"`

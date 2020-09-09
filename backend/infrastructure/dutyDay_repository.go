@@ -2,15 +2,16 @@ package infrastructure
 
 import (
 	"context"
+	"dsv/domain"
+	"dsv/infrastructure/database"
 	"fmt"
 	"log"
-	"main/domain"
-	"main/infrastructure/database"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// DutyDayRepository ..
 type DutyDayRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDutyDay(ctx context.Context, newDutyDay *domain.DutyDay) (*domain.DutyDay, error)
@@ -67,7 +68,7 @@ func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyN
 	if err != nil {
 		return err
 	}
-	if res.Name != newDutyName {
+	if res.Day != newDutyName {
 		filter := bson.M{"_id": res.ID}
 		update := bson.M{"$set": bson.M{"Day": newDutyName}}
 		_, err := collection.UpdateOne(ctx, filter, update)
@@ -122,9 +123,9 @@ func (cp *dutyDayRep) GetDutyDayByID(ctx context.Context, ids string) (*domain.D
 	return &res, nil
 }
 
-func (cp *dutyDayRep) GetDutyDays(ctx context.Context) ([]*domain.dutyDay, error) {
+func (cp *dutyDayRep) GetDutyDays(ctx context.Context) ([]*domain.DutyDay, error) {
 
-	var specArray []*domain.dutyDay
+	var specArray []*domain.DutyDay
 
 	con := database.NewConnectDB()
 	client, err := con.ConnectDB(ctx)
@@ -142,7 +143,7 @@ func (cp *dutyDayRep) GetDutyDays(ctx context.Context) ([]*domain.dutyDay, error
 	}
 	for cur.Next(ctx) {
 		//
-		var elem domain.dutyDay
+		var elem domain.DutyDay
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal(err)

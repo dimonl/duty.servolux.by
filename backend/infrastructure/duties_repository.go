@@ -2,10 +2,10 @@ package infrastructure
 
 import (
 	"context"
+	"dsv/domain"
+	"dsv/infrastructure/database"
 	"fmt"
 	"log"
-	"main/domain"
-	"main/infrastructure/database"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -52,52 +52,52 @@ func (cp *dutiesRep) CreateDuty(ctx context.Context, newDuty *domain.Duties) (*d
 
 func (cp *dutiesRep) UpdateDuty(ctx context.Context, dutyId string, newDuty string) error {
 
-	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	defer con.DisconnectDB(ctx, client)
+	// con := database.NewConnectDB()
+	// client, err := con.ConnectDB(ctx)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// 	return err
+	// }
+	// defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	// collection := client.Database(database.DBname).Collection(database.DBDutyTable)
 
-	//id, _ := primitive.ObjectIDFromHex(companyId)
-	res, err := cp.GetDutyByID(ctx, dutyId)
-	if err != nil {
-		return err
-	}
-	if res.Name != newDuty {
-		filter := bson.M{"_id": res.ID}
-		update := bson.M{"$set": bson.M{"Name": newDuty}}
-		_, err := collection.UpdateOne(ctx, filter, update)
-		if err != nil {
-			//fmt.Printf("update fail %v\n", err)
-			log.Fatal(err)
-			return err
-		}
-	}
+	// //id, _ := primitive.ObjectIDFromHex(companyId)
+	// res, err := cp.GetDutyByID(ctx, dutyId)
+	// if err != nil {
+	// 	return err
+	// }
+	// if res.Name != newDuty {
+	// 	filter := bson.M{"_id": res.ID}
+	// 	update := bson.M{"$set": bson.M{"Name": newDuty}}
+	// 	_, err := collection.UpdateOne(ctx, filter, update)
+	// 	if err != nil {
+	// 		//fmt.Printf("update fail %v\n", err)
+	// 		log.Fatal(err)
+	// 		return err
+	// 	}
+	// }
 	return nil
 }
 
 func (cp *dutiesRep) DeleteDuty(ctx context.Context, dutyId string) error {
 
-	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	defer con.DisconnectDB(ctx, client)
+	// con := database.NewConnectDB()
+	// client, err := con.ConnectDB(ctx)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// 	return err
+	// }
+	// defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyTable)
-	id, _ := primitive.ObjectIDFromHex(companyId)
-	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	fmt.Println(deleteResult)
+	// collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	// id, _ := primitive.ObjectIDFromHex(companyId)
+	// deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
+	// if err != nil {
+	// 	log.Fatal(err)
+	// 	return err
+	// }
+	// fmt.Println(deleteResult)
 	return nil
 }
 

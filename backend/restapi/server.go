@@ -1,28 +1,30 @@
 package restapi
 
 import (
+	"dsv/restapi/handlers"
 	"fmt"
 	"log"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
 type MyServer struct {
 	port                  string
-	dutiesHandler         handlers.dutiesHandler
-	dutyCategoriesHandler handlers.dutyCategoriesHandler
-	dutyDayHandler        handlers.dutyDayHandler
-	dutyWorkersHandler    handlers.dutyWorkersHandler
-	userHandler           handlers.userHandler
+	dutiesHandler         handlers.DutiesHandler
+	dutyCategoriesHandler handlers.DutyCategoriesHandler
+	dutyDayHandler        handlers.DutyDayHandler
+	dutyWorkersHandler    handlers.DutyWorkersHandler
+	userHandler           handlers.UserHandler
 	//authMiddleware middleware.AuthMiddleware
 }
 
 //func NewServer(port string, usersHandler handlers.UsersHandler, schoolHandlers handlers.SchoolHandler, groupHandlers handlers.GroupsHandler, authMiddleware middleware.AuthMiddleware) *MyServer {
 func NewServer(port string,
-	dutiesHandler handlers.dutiesHandler,
-	dutyCategoriesHandler handlers.dutyCategoriesHandler,
-	dutyDayHandler handlers.dutyDayHandler,
-	dutyWorkersHandler handlers.dutyWorkersHandler,
-	userHandler handlers.userHandler,
+	dutiesHandler handlers.DutiesHandler,
+	dutyCategoriesHandler handlers.DutyCategoriesHandler,
+	dutyDayHandler handlers.DutyDayHandler,
+	dutyWorkersHandler handlers.DutyWorkersHandler,
+	userHandler handlers.UserHandler,
 ) *MyServer {
 	return &MyServer{
 		port:                  port,
@@ -36,26 +38,34 @@ func NewServer(port string,
 
 func (server *MyServer) ConfigureAndRun() {
 
-	userMux := http.NewServeMux()
-	userMux.HandleFunc("/users", server.userHandler.Users)
-	userMux.HandleFunc("/user/", server.userHandler.User)
+	siteMux := mux.NewRouter()
 
-	userMux.HandleFunc("/", indexHandler) //)server.companyHandler.Companies
+	// Users
+	siteMux.HandleFunc("/login", server.userHandler.Login)
+	siteMux.HandleFunc("/logout", server.userHandler.Logout)
+	siteMux.HandleFunc("/register", server.userHandler.AddUser)
 
-	userMux.HandleFunc("/dutyWorkers", server.dutyWorkersHandler.DutyWorkers)
-	userMux.HandleFunc("/dutyWorker/", server.dutyWorkersHandler.DutyWorker)
 
-	userMux.HandleFunc("/dutyDays", server.dutyDayHandler.DutyDays)
-	userMux.HandleFunc("/dutyDay/", server.dutyDayHandler.DutyDay)
-
-	userMux.HandleFunc("/dutyCategories", server.dutyCategoriesHandler.DutyCategories)
-	userMux.HandleFunc("/dutyCategory/", server.dutyCategoriesHandler.DutyCategory)
-
-	userMux.HandleFunc("/duties", server.dutiesHandler.Duties)
-	userMux.HandleFunc("/duty/", server.dutiesHandler.Duty)
+	//userMux := http.NewServeMux()
+	//userMux.HandleFunc("/users", server.userHandler.Users)
+	//userMux.HandleFunc("/user/", server.userHandler.User)
+	//
+	//userMux.HandleFunc("/", indexHandler) //)server.companyHandler.Companies
+	//
+	//userMux.HandleFunc("/dutyWorkers", server.dutyWorkersHandler.DutyWorkers)
+	//userMux.HandleFunc("/dutyWorker/", server.dutyWorkersHandler.DutyWorker)
+	//
+	//userMux.HandleFunc("/dutyDays", server.dutyDayHandler.DutyDays)
+	//userMux.HandleFunc("/dutyDay/", server.dutyDayHandler.DutyDay)
+	//
+	//userMux.HandleFunc("/dutyCategories", server.dutyCategoriesHandler.DutyCategories)
+	//userMux.HandleFunc("/dutyCategory/", server.dutyCategoriesHandler.DutyCategory)
+	//
+	//userMux.HandleFunc("/duties", server.dutiesHandler.Duties)
+	//userMux.HandleFunc("/duty/", server.dutiesHandler.Duty)
 
 	fmt.Printf("listening at %s", server.port)
-	log.Fatal(http.ListenAndServe(server.port, userMux))
+	log.Fatal(http.ListenAndServe(server.port, siteMux))
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {

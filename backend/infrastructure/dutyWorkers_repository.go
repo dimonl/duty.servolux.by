@@ -2,15 +2,16 @@ package infrastructure
 
 import (
 	"context"
+	"dsv/domain"
+	"dsv/infrastructure/database"
 	"fmt"
 	"log"
-	"main/domain"
-	"main/infrastructure/database"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// DutyWorkersRepository ..
 type DutyWorkersRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDutyWorker(ctx context.Context, newDutyWorker *domain.DutyWorkers) (*domain.DutyWorkers, error)
@@ -67,7 +68,7 @@ func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId string, ne
 	if err != nil {
 		return err
 	}
-	if res.Name != newDutyName {
+	if res.FirstName != newDutyName {
 		filter := bson.M{"_id": res.ID}
 		update := bson.M{"$set": bson.M{"FirstName": newDutyName}}
 		_, err := collection.UpdateOne(ctx, filter, update)

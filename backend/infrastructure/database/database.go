@@ -9,11 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const DBUserTable = "userDBTable"
-const DBDutyCategoriesTable = "dutyCategoriesDBTable"
-const DBDutyWorkersTable = "dutyWorkersDBTable"
-const DBDutyDayTable = "dutyDayDBTable"
-const DBDutyTable = "dutiesDBTable"
+const UsersCollectionName = "users"
+const DBDutyCategoriesTable = "dutyCategories"
+const DBDutyWorkersTable = "dutyWorkers"
+const DBDutyDayTable = "dutyDay"
+const DBDutyTable = "duties"
 const DBname = "dutyDB"
 const URI = "mongodb://127.0.0.1:27017"
 

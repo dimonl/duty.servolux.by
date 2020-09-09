@@ -2,15 +2,16 @@ package infrastructure
 
 import (
 	"context"
+	"dsv/domain"
+	"dsv/infrastructure/database"
 	"fmt"
 	"log"
-	"main/domain"
-	"main/infrastructure/database"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// DutyCategoriesRepository ..
 type DutyCategoriesRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDutyCategory(ctx context.Context, newDutyCategory *domain.DutyCategories) (*domain.DutyCategories, error)
@@ -67,7 +68,7 @@ func (cp *dutyCategoriesRep) UpdateDutyCategory(ctx context.Context, dutyId stri
 	if err != nil {
 		return err
 	}
-	if res.Name != newDutyName {
+	if res.Category != newDutyName {
 		filter := bson.M{"_id": res.ID}
 		update := bson.M{"$set": bson.M{"Category": newDutyName}}
 		_, err := collection.UpdateOne(ctx, filter, update)
@@ -151,4 +152,8 @@ func (cp *dutyCategoriesRep) GetDuties(ctx context.Context) ([]*domain.DutyCateg
 	}
 	cur.Close(ctx)
 	return specArray, nil
+}
+
+func (cp *dutyCategoriesRep) GetDutyCategories(ctx context.Context) ([]*domain.DutyCategories, error) {
+	return nil, nil
 }
