@@ -15,6 +15,8 @@ type dutiesHandler struct {
 	dutiesRepository infrastructure.DutiesRepository
 }
 
+// NewproductHandler constructor to check my github
+
 // NewproductHandler constructor
 func NewDutiesHandler(dutiesRepository infrastructure.DutiesRepository) DutiesHandler {
 	return &dutiesHandler{
