@@ -16,6 +16,10 @@ type dutiesHandler struct {
 }
 
 // NewproductHandler constructor
+// NewproductHandler constructor
+// NewproductHandler constructor
+
+// NewproductHandler constructor
 func NewDutiesHandler(dutiesRepository infrastructure.DutiesRepository) DutiesHandler {
 	return &dutiesHandler{
 		dutiesRepository: dutiesRepository,
