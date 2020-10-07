@@ -31,7 +31,7 @@ func NewDutyDayRepository() DutyDayRepository {
 //func (cp *companyRep) CreateCompany(ctx context.Context, companyName string) (*domain.Company, error) {
 func (cp *dutyDayRep) CreateDutyDay(ctx context.Context, newDutyDay *domain.DutyDay) (*domain.DutyDay, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -54,7 +54,7 @@ func (cp *dutyDayRep) CreateDutyDay(ctx context.Context, newDutyDay *domain.Duty
 func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyName string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -84,7 +84,7 @@ func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyN
 func (cp *dutyDayRep) DeleteDutyDay(ctx context.Context, dutyDayId string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -104,7 +104,7 @@ func (cp *dutyDayRep) DeleteDutyDay(ctx context.Context, dutyDayId string) error
 
 func (cp *dutyDayRep) GetDutyDayByID(ctx context.Context, ids string) (*domain.DutyDay, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -128,7 +128,7 @@ func (cp *dutyDayRep) GetDutyDays(ctx context.Context) ([]*domain.DutyDay, error
 	var specArray []*domain.DutyDay
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

@@ -30,7 +30,7 @@ func NewDutiesRepository() DutiesRepository {
 //func (cp *companyRep) CreateCompany(ctx context.Context, companyName string) (*domain.Company, error) {
 func (cp *dutiesRep) CreateDuty(ctx context.Context, newDuty *domain.Duties) (*domain.Duties, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -103,7 +103,7 @@ func (cp *dutiesRep) DeleteDuty(ctx context.Context, dutyId string) error {
 
 func (cp *dutiesRep) GetDutyByID(ctx context.Context, ids string) (*domain.Duties, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -127,7 +127,7 @@ func (cp *dutiesRep) GetDuties(ctx context.Context) ([]*domain.Duties, error) {
 	var specArray []*domain.Duties
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

@@ -38,7 +38,7 @@ func NewUserRepository() UserRepository {
 // CreateUser ..
 func (cp *UserRep) CreateUser(ctx context.Context, login string, pass string) (*domain.User, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -46,32 +46,43 @@ func (cp *UserRep) CreateUser(ctx context.Context, login string, pass string) (*
 	defer con.DisconnectDB(ctx, client)
 
 	h := md5.New()
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
 
-	userForInsert := domain.NewUser()
-	userForInsert.ID = primitive.NewObjectID()
-	userForInsert.FirstName = login
-	userForInsert.Password = string(h.Sum([]byte(pass)))
+	//userExist, err := cp.GetUserByLogin(ctx, login)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//fmt.Println(userExist)
+	//fmt.Println(err)
+	//if userExist == nil {
+		userForInsert := domain.NewUser()
+		userForInsert.ID = primitive.NewObjectID()
+		userForInsert.Email = login
+		userForInsert.Password = string(h.Sum([]byte(pass)))
 
-	res, err := collection.InsertOne(ctx, userForInsert)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(res)
-	return userForInsert, nil
+		res, err := collection.InsertOne(ctx, userForInsert)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(res)
+		return userForInsert, nil
+	//}else{
+	//	fmt.Println(userExist)
+	//	return userExist, nil
+	//}
 }
 
 func (cp *UserRep) UpdateUser(ctx context.Context, userId string, newUserName string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
 
 	//id, _ := primitive.ObjectIDFromHex(companyId)
 	res, err := cp.GetUserByID(ctx, userId)
@@ -94,14 +105,14 @@ func (cp *UserRep) UpdateUser(ctx context.Context, userId string, newUserName st
 func (cp *UserRep) DeleteUser(ctx context.Context, userId string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
 	id, _ := primitive.ObjectIDFromHex(userId)
 	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
 	if err != nil {
@@ -114,14 +125,14 @@ func (cp *UserRep) DeleteUser(ctx context.Context, userId string) error {
 
 func (cp *UserRep) GetUserByID(ctx context.Context, userId string) (*domain.User, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
 	id, _ := primitive.ObjectIDFromHex(userId)
 	filter := bson.D{{"_id", id}}
 	var res domain.User
@@ -138,14 +149,14 @@ func (cp *UserRep) GetUsers(ctx context.Context) ([]*domain.User, error) {
 	var specArray []*domain.User
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
 	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)
@@ -191,7 +202,7 @@ func (cp *UserRep) UserLogin(ctx context.Context, login string, pass string) (*d
 
 func (cp *UserRep) GetUserByLogin(ctx context.Context, login string) (*domain.User, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -200,13 +211,12 @@ func (cp *UserRep) GetUserByLogin(ctx context.Context, login string) (*domain.Us
 
 	var result domain.User
 
-	collection := client.Database(database.DBname).Collection(database.UsersCollectionName)
-	filter := bson.D{{"name", login}}
+	collection := client.Database(database.DbNameOnline).Collection(database.UsersCollectionName)
+	filter := bson.D{{"email", login}}
 
 	err = collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
-
 	return &result, nil
 }

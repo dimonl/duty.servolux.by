@@ -10,28 +10,28 @@ import (
 
 type MyServer struct {
 	port                  string
-	dutiesHandler         handlers.DutiesHandler
+	//dutiesHandler         handlers.DutiesHandler
 	dutyCategoriesHandler handlers.DutyCategoriesHandler
-	dutyDayHandler        handlers.DutyDayHandler
-	dutyWorkersHandler    handlers.DutyWorkersHandler
+	//dutyDayHandler        handlers.DutyDayHandler
+	//dutyWorkersHandler    handlers.DutyWorkersHandler
 	userHandler           handlers.UserHandler
 	//authMiddleware middleware.AuthMiddleware
 }
 
 //func NewServer(port string, usersHandler handlers.UsersHandler, schoolHandlers handlers.SchoolHandler, groupHandlers handlers.GroupsHandler, authMiddleware middleware.AuthMiddleware) *MyServer {
 func NewServer(port string,
-	dutiesHandler handlers.DutiesHandler,
+	//dutiesHandler handlers.DutiesHandler,
 	dutyCategoriesHandler handlers.DutyCategoriesHandler,
-	dutyDayHandler handlers.DutyDayHandler,
-	dutyWorkersHandler handlers.DutyWorkersHandler,
+	//dutyDayHandler handlers.DutyDayHandler,
+	//dutyWorkersHandler handlers.DutyWorkersHandler,
 	userHandler handlers.UserHandler,
 ) *MyServer {
 	return &MyServer{
 		port:                  port,
-		dutiesHandler:         dutiesHandler,
+		//dutiesHandler:         dutiesHandler,
 		dutyCategoriesHandler: dutyCategoriesHandler,
-		dutyDayHandler:        dutyDayHandler,
-		dutyWorkersHandler:    dutyWorkersHandler,
+		//dutyDayHandler:        dutyDayHandler,
+		//dutyWorkersHandler:    dutyWorkersHandler,
 		userHandler:           userHandler,
 	}
 }
@@ -44,7 +44,12 @@ func (server *MyServer) ConfigureAndRun() {
 	siteMux.HandleFunc("/login", server.userHandler.Login)
 	siteMux.HandleFunc("/logout", server.userHandler.Logout)
 	siteMux.HandleFunc("/register", server.userHandler.AddUser)
+	siteMux.HandleFunc("/getusers", server.userHandler.GetUsersList)
 
+	//GET byID and List
+	siteMux.HandleFunc("/DutyCategories/", server.dutyCategoriesHandler.DutyCategories)
+	//Post,Patch,Delete
+	siteMux.HandleFunc("/DutyCategory/", server.dutyCategoriesHandler.DutyCategory)
 
 	//userMux := http.NewServeMux()
 	//userMux.HandleFunc("/users", server.userHandler.Users)
