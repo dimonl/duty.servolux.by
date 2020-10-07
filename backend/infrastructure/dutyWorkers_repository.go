@@ -15,7 +15,7 @@ import (
 type DutyWorkersRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDutyWorker(ctx context.Context, newDutyWorker *domain.DutyWorkers) (*domain.DutyWorkers, error)
-	UpdateDutyWorker(ctx context.Context, dutyId string, newDutyName string) error
+	UpdateDutyWorker(ctx context.Context, dutyId, newDutyName, newDutySurname, newIDCategories string) error
 	DeleteDutyWorker(ctx context.Context, dutyId string) error
 	GetDutyWorkerByID(ctx context.Context, dutyId string) (*domain.DutyWorkers, error)
 	GetDutyWorkers(ctx context.Context) ([]*domain.DutyWorkers, error)
@@ -51,7 +51,7 @@ func (cp *dutyWorkerRep) CreateDutyWorker(ctx context.Context, newDutyWorker *do
 	return newDutyWorker, nil
 }
 
-func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId string, newDutyName string) error {
+func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId, newDutyName, newDutySurname, newIDCategories string) error {
 
 	con := database.NewConnectDB()
 	client, err := con.ConnectDB(ctx, database.URIOnline)
@@ -70,7 +70,7 @@ func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId string, ne
 	}
 	if res.FirstName != newDutyName {
 		filter := bson.M{"_id": res.ID}
-		update := bson.M{"$set": bson.M{"FirstName": newDutyName}}
+		update := bson.M{"$set": bson.M{"FirstName": newDutyName, "LastName": newDutySurname,"IDCategory": newIDCategories}}
 		_, err := collection.UpdateOne(ctx, filter, update)
 		if err != nil {
 			//fmt.Printf("update fail %v\n", err)

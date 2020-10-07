@@ -2,7 +2,20 @@ package domain
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+type IdDutyWorkersData struct {
+	ID string `json:"id"`
+}
+
 type DutyWorkersData struct {
+	FirstName  string `json:"firstname"`
+	LastName   string `json:"lastname"`
+	Email      string `json:"email"`
+	IDCategory string `json:"idcategory"`
+}
+
+
+type PatchDutyWorkersData struct {
+	ID string `json:"id"`
 	FirstName  string `json:"firstname"`
 	LastName   string `json:"lastname"`
 	Email      string `json:"email"`
