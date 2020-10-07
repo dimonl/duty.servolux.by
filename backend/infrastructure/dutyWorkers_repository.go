@@ -31,14 +31,14 @@ func NewDutyWorkersRepository() DutyWorkersRepository {
 //func (cp *companyRep) CreateCompany(ctx context.Context, companyName string) (*domain.Company, error) {
 func (cp *dutyWorkerRep) CreateDutyWorker(ctx context.Context, newDutyWorker *domain.DutyWorkers) (*domain.DutyWorkers, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyWorkersTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyWorkersTable)
 
 	//comp := domain.NewCompany()
 	//comp.ID = primitive.NewObjectID()
@@ -54,14 +54,14 @@ func (cp *dutyWorkerRep) CreateDutyWorker(ctx context.Context, newDutyWorker *do
 func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId string, newDutyName string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyWorkersTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyWorkersTable)
 
 	//id, _ := primitive.ObjectIDFromHex(companyId)
 	res, err := cp.GetDutyWorkerByID(ctx, dutyId)
@@ -84,14 +84,14 @@ func (cp *dutyWorkerRep) UpdateDutyWorker(ctx context.Context, dutyId string, ne
 func (cp *dutyWorkerRep) DeleteDutyWorker(ctx context.Context, dutyWorkerId string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyWorkersTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyWorkersTable)
 	id, _ := primitive.ObjectIDFromHex(dutyWorkerId)
 	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
 	if err != nil {
@@ -104,14 +104,14 @@ func (cp *dutyWorkerRep) DeleteDutyWorker(ctx context.Context, dutyWorkerId stri
 
 func (cp *dutyWorkerRep) GetDutyWorkerByID(ctx context.Context, ids string) (*domain.DutyWorkers, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyWorkersTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyWorkersTable)
 	id, _ := primitive.ObjectIDFromHex(ids)
 	filter := bson.D{{"_id", id}}
 	var res domain.DutyWorkers
@@ -128,14 +128,14 @@ func (cp *dutyWorkerRep) GetDutyWorkers(ctx context.Context) ([]*domain.DutyWork
 	var specArray []*domain.DutyWorkers
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyWorkersTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyWorkersTable)
 	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)

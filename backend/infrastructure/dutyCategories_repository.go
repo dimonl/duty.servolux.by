@@ -31,37 +31,35 @@ func NewDutyCategoriesRepository() DutyCategoriesRepository {
 //func (cp *companyRep) CreateCompany(ctx context.Context, companyName string) (*domain.Company, error) {
 func (cp *dutyCategoriesRep) CreateDutyCategory(ctx context.Context, newDutyCategory *domain.DutyCategories) (*domain.DutyCategories, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyCategoriesTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyCategoriesTable)
 
-	//comp := domain.NewCompany()
-	//comp.ID = primitive.NewObjectID()
-	//comp.Name = companyName
 	res, err := collection.InsertOne(ctx, newDutyCategory)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(res)
+	// newDutyCategory.ID = res.InsertedID
 	return newDutyCategory, nil
 }
 
 func (cp *dutyCategoriesRep) UpdateDutyCategory(ctx context.Context, dutyId string, newDutyName string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyCategoriesTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyCategoriesTable)
 
 	//id, _ := primitive.ObjectIDFromHex(companyId)
 	res, err := cp.GetDutyCategoryByID(ctx, dutyId)
@@ -84,14 +82,14 @@ func (cp *dutyCategoriesRep) UpdateDutyCategory(ctx context.Context, dutyId stri
 func (cp *dutyCategoriesRep) DeleteDutyCategory(ctx context.Context, dutyCategoryId string) error {
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyCategoriesTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyCategoriesTable)
 	id, _ := primitive.ObjectIDFromHex(dutyCategoryId)
 	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
 	if err != nil {
@@ -104,14 +102,14 @@ func (cp *dutyCategoriesRep) DeleteDutyCategory(ctx context.Context, dutyCategor
 
 func (cp *dutyCategoriesRep) GetDutyCategoryByID(ctx context.Context, ids string) (*domain.DutyCategories, error) {
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyCategoriesTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyCategoriesTable)
 	id, _ := primitive.ObjectIDFromHex(ids)
 	filter := bson.D{{"_id", id}}
 	var res domain.DutyCategories
@@ -123,19 +121,19 @@ func (cp *dutyCategoriesRep) GetDutyCategoryByID(ctx context.Context, ids string
 	return &res, nil
 }
 
-func (cp *dutyCategoriesRep) GetDuties(ctx context.Context) ([]*domain.DutyCategories, error) {
+func (cp *dutyCategoriesRep) GetDutyCategories(ctx context.Context) ([]*domain.DutyCategories, error) {
 
 	var specArray []*domain.DutyCategories
 
 	con := database.NewConnectDB()
-	client, err := con.ConnectDB(ctx)
+	client, err := con.ConnectDB(ctx, database.URIOnline)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyCategoriesTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyCategoriesTable)
 	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)
@@ -152,8 +150,4 @@ func (cp *dutyCategoriesRep) GetDuties(ctx context.Context) ([]*domain.DutyCateg
 	}
 	cur.Close(ctx)
 	return specArray, nil
-}
-
-func (cp *dutyCategoriesRep) GetDutyCategories(ctx context.Context) ([]*domain.DutyCategories, error) {
-	return nil, nil
 }

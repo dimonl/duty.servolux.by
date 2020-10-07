@@ -60,22 +60,24 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uh *userHandler) GetUsersList(w http.ResponseWriter, r *http.Request) {
-	// users, err := h.usersRepository.GetUserList(context.Background())
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
+	users, err := uh.userRepository.GetUsers(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	// res, err := json.Marshal(users)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
+	usersJson, err := json.Marshal(users)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, string(usersJson))
+	return
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
