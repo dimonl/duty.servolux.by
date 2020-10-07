@@ -13,7 +13,7 @@ type MyServer struct {
 	//dutiesHandler         handlers.DutiesHandler
 	dutyCategoriesHandler handlers.DutyCategoriesHandler
 	//dutyDayHandler        handlers.DutyDayHandler
-	//dutyWorkersHandler    handlers.DutyWorkersHandler
+	dutyWorkersHandler    handlers.DutyWorkersHandler
 	userHandler           handlers.UserHandler
 	//authMiddleware middleware.AuthMiddleware
 }
@@ -23,7 +23,7 @@ func NewServer(port string,
 	//dutiesHandler handlers.DutiesHandler,
 	dutyCategoriesHandler handlers.DutyCategoriesHandler,
 	//dutyDayHandler handlers.DutyDayHandler,
-	//dutyWorkersHandler handlers.DutyWorkersHandler,
+	dutyWorkersHandler handlers.DutyWorkersHandler,
 	userHandler handlers.UserHandler,
 ) *MyServer {
 	return &MyServer{
@@ -31,7 +31,7 @@ func NewServer(port string,
 		//dutiesHandler:         dutiesHandler,
 		dutyCategoriesHandler: dutyCategoriesHandler,
 		//dutyDayHandler:        dutyDayHandler,
-		//dutyWorkersHandler:    dutyWorkersHandler,
+		dutyWorkersHandler:    dutyWorkersHandler,
 		userHandler:           userHandler,
 	}
 }
@@ -50,6 +50,12 @@ func (server *MyServer) ConfigureAndRun() {
 	siteMux.HandleFunc("/DutyCategories/", server.dutyCategoriesHandler.DutyCategories)
 	//Post,Patch,Delete
 	siteMux.HandleFunc("/DutyCategory/", server.dutyCategoriesHandler.DutyCategory)
+
+	siteMux.HandleFunc("/addworker", server.dutyWorkersHandler.AddWorker)
+	siteMux.HandleFunc("/deleteworker", server.dutyWorkersHandler.DeleteWorker)
+	siteMux.HandleFunc("/updateworker", server.dutyWorkersHandler.UpdateWorker)
+	siteMux.HandleFunc("/getworker", server.dutyWorkersHandler.GetWorkerById)
+	siteMux.HandleFunc("/getworkerslist", server.dutyWorkersHandler.GetWorkersList)
 
 	//userMux := http.NewServeMux()
 	//userMux.HandleFunc("/users", server.userHandler.Users)
