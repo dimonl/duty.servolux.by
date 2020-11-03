@@ -15,7 +15,7 @@ import (
 type DutyDayRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDutyDay(ctx context.Context, newDutyDay *domain.DutyDay) (*domain.DutyDay, error)
-	UpdateDutyDay(ctx context.Context, dutyId string, newDutyName string) error
+	UpdateDutyDay(ctx context.Context, dutyId string, newDutyName string, newDutyDayOff int) error
 	DeleteDutyDay(ctx context.Context, dutyId string) error
 	GetDutyDayByID(ctx context.Context, dutyId string) (*domain.DutyDay, error)
 	GetDutyDays(ctx context.Context) ([]*domain.DutyDay, error)
@@ -38,7 +38,7 @@ func (cp *dutyDayRep) CreateDutyDay(ctx context.Context, newDutyDay *domain.Duty
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyDayTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyDayTable)
 
 	//comp := domain.NewCompany()
 	//comp.ID = primitive.NewObjectID()
@@ -51,7 +51,7 @@ func (cp *dutyDayRep) CreateDutyDay(ctx context.Context, newDutyDay *domain.Duty
 	return newDutyDay, nil
 }
 
-func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyName string) error {
+func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyName string, newDutyDayOff int) error {
 
 	con := database.NewConnectDB()
 	client, err := con.ConnectDB(ctx, database.URIOnline)
@@ -61,7 +61,7 @@ func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyN
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyDayTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyDayTable)
 
 	//id, _ := primitive.ObjectIDFromHex(companyId)
 	res, err := cp.GetDutyDayByID(ctx, dutyId)
@@ -70,7 +70,7 @@ func (cp *dutyDayRep) UpdateDutyDay(ctx context.Context, dutyId string, newDutyN
 	}
 	if res.Day != newDutyName {
 		filter := bson.M{"_id": res.ID}
-		update := bson.M{"$set": bson.M{"Day": newDutyName}}
+		update := bson.M{"$set": bson.M{"Day": newDutyName, "IsDayOff": newDutyDayOff}}
 		_, err := collection.UpdateOne(ctx, filter, update)
 		if err != nil {
 			//fmt.Printf("update fail %v\n", err)
@@ -91,7 +91,7 @@ func (cp *dutyDayRep) DeleteDutyDay(ctx context.Context, dutyDayId string) error
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyDayTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyDayTable)
 	id, _ := primitive.ObjectIDFromHex(dutyDayId)
 	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
 	if err != nil {
@@ -111,7 +111,7 @@ func (cp *dutyDayRep) GetDutyDayByID(ctx context.Context, ids string) (*domain.D
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyDayTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyDayTable)
 	id, _ := primitive.ObjectIDFromHex(ids)
 	filter := bson.D{{"_id", id}}
 	var res domain.DutyDay
@@ -135,7 +135,7 @@ func (cp *dutyDayRep) GetDutyDays(ctx context.Context) ([]*domain.DutyDay, error
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyDayTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyDayTable)
 	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)

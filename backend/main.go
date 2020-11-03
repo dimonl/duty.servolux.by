@@ -9,15 +9,15 @@ import (
 )
 
 func main() {
-	//dutiesRepo := infrastructure.NewDutiesRepository()
+	dutiesRepo := infrastructure.NewDutiesRepository()
 	dutyCategoriesRepo := infrastructure.NewDutyCategoriesRepository()
-	//dutyDayRepo := infrastructure.NewDutyDayRepository()
+	dutyDayRepo := infrastructure.NewDutyDayRepository()
 	dutyWorkersRepo := infrastructure.NewDutyWorkersRepository()
 	userRepo := infrastructure.NewUserRepository()
 
-	//dutiesHandler := handlers.NewDutiesHandler(dutiesRepo)
+	dutiesHandler := handlers.NewDutiesHandler(dutiesRepo)
 	dutyCategoriesHandler := handlers.NewDutyCategoriesHandler(dutyCategoriesRepo)
-	//dutyDayHandler := handlers.NewDutyDayHandler(dutyDayRepo)
+	dutyDayHandler := handlers.NewDutyDayHandler(dutyDayRepo)
 	dutyWorkersHandler := handlers.NewDutyWorkersHandler(dutyWorkersRepo)
 	userHandler := handlers.NewUserHandler(userRepo)
 
@@ -25,7 +25,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-//	srv := restapi.NewServer(":"+port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
-	srv := restapi.NewServer(":"+port, dutyCategoriesHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
+	//	srv := restapi.NewServer(":"+port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
+	srv := restapi.NewServer(":"+port, dutiesHandler, dutyCategoriesHandler, dutyDayHandler, dutyWorkersHandler, userHandler) //, adminsHandler, authMiddleware)
 	srv.ConfigureAndRun()
 }

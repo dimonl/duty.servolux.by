@@ -14,7 +14,7 @@ import (
 type DutiesRepository interface {
 	//TODO make func to realize methods of this repo
 	CreateDuty(ctx context.Context, newDuty *domain.Duties) (*domain.Duties, error)
-	UpdateDuty(ctx context.Context, dutyId string, newDuty string) error
+	UpdateDuty(ctx context.Context, dutyId string, newIDDutyDay string, newIDDutyWorker string) error
 	DeleteDuty(ctx context.Context, dutyId string) error
 	GetDutyByID(ctx context.Context, dutyId string) (*domain.Duties, error)
 	GetDuties(ctx context.Context) ([]*domain.Duties, error)
@@ -37,7 +37,7 @@ func (cp *dutiesRep) CreateDuty(ctx context.Context, newDuty *domain.Duties) (*d
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyTable)
 
 	//comp := domain.NewCompany()
 	//comp.ID = primitive.NewObjectID()
@@ -50,54 +50,54 @@ func (cp *dutiesRep) CreateDuty(ctx context.Context, newDuty *domain.Duties) (*d
 	return newDuty, nil
 }
 
-func (cp *dutiesRep) UpdateDuty(ctx context.Context, dutyId string, newDuty string) error {
+func (cp *dutiesRep) UpdateDuty(ctx context.Context, dutyId string, newIDDutyDay string, newIDDutyWorker string) error {
 
-	// con := database.NewConnectDB()
-	// client, err := con.ConnectDB(ctx)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	return err
-	// }
-	// defer con.DisconnectDB(ctx, client)
+	con := database.NewConnectDB()
+	client, err := con.ConnectDB(ctx, database.URIOnline)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer con.DisconnectDB(ctx, client)
 
-	// collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyTable)
 
-	// //id, _ := primitive.ObjectIDFromHex(companyId)
-	// res, err := cp.GetDutyByID(ctx, dutyId)
-	// if err != nil {
-	// 	return err
-	// }
-	// if res.Name != newDuty {
-	// 	filter := bson.M{"_id": res.ID}
-	// 	update := bson.M{"$set": bson.M{"Name": newDuty}}
-	// 	_, err := collection.UpdateOne(ctx, filter, update)
-	// 	if err != nil {
-	// 		//fmt.Printf("update fail %v\n", err)
-	// 		log.Fatal(err)
-	// 		return err
-	// 	}
-	// }
+	//id, _ := primitive.ObjectIDFromHex(companyId)
+	res, err := cp.GetDutyByID(ctx, dutyId)
+	if err != nil {
+		return err
+	}
+	if res.IDDutyDay.String() != newIDDutyDay {
+		filter := bson.M{"_id": res.ID}
+		update := bson.M{"$set": bson.M{"IDDutyDay": newIDDutyDay, "IDDutyWorker": newIDDutyWorker}}
+		_, err := collection.UpdateOne(ctx, filter, update)
+		if err != nil {
+			//fmt.Printf("update fail %v\n", err)
+			log.Fatal(err)
+			return err
+		}
+	}
 	return nil
 }
 
 func (cp *dutiesRep) DeleteDuty(ctx context.Context, dutyId string) error {
 
-	// con := database.NewConnectDB()
-	// client, err := con.ConnectDB(ctx)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	return err
-	// }
-	// defer con.DisconnectDB(ctx, client)
+	con := database.NewConnectDB()
+	client, err := con.ConnectDB(ctx, database.URIOnline)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer con.DisconnectDB(ctx, client)
 
-	// collection := client.Database(database.DBname).Collection(database.DBDutyTable)
-	// id, _ := primitive.ObjectIDFromHex(companyId)
-	// deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	return err
-	// }
-	// fmt.Println(deleteResult)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyTable)
+	id, _ := primitive.ObjectIDFromHex(dutyId)
+	deleteResult, err := collection.DeleteOne(context.TODO(), bson.D{{"_id", id}})
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	fmt.Println(deleteResult)
 	return nil
 }
 
@@ -110,7 +110,7 @@ func (cp *dutiesRep) GetDutyByID(ctx context.Context, ids string) (*domain.Dutie
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyTable)
 	id, _ := primitive.ObjectIDFromHex(ids)
 	filter := bson.D{{"_id", id}}
 	var res domain.Duties
@@ -134,7 +134,7 @@ func (cp *dutiesRep) GetDuties(ctx context.Context) ([]*domain.Duties, error) {
 	}
 	defer con.DisconnectDB(ctx, client)
 
-	collection := client.Database(database.DBname).Collection(database.DBDutyTable)
+	collection := client.Database(database.DbNameOnline).Collection(database.DBDutyTable)
 	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)

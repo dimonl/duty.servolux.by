@@ -7,6 +7,16 @@ type DutiesData struct {
 	IDDutyWorker string `json:"iddutyworker"`
 }
 
+type IdDuties struct {
+	ID string `json:"id"`
+}
+
+type PatchDutiesData struct {
+	ID           string `json:"id"`
+	IDDutyDay    string `json:"iddutyday"`
+	IDDutyWorker string `json:"iddutyworker"`
+}
+
 type Duties struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	IDDutyDay    primitive.ObjectID

@@ -7,6 +7,16 @@ type DutyDayData struct {
 	IsDayOff int    `json:"isdayoff"`
 }
 
+type IdDutyDayData struct {
+	ID string `json:"id"`
+}
+
+type PatchDutyDayData struct {
+	ID       string `json:"id"`
+	Day      string `json:"day"`
+	IsDayOff int    `json:"isdayoff"`
+}
+
 type DutyDay struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
 	Day      string
